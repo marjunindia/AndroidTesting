@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">1FirstTest</string>
+    <array name="myarray">
+        <item>1</item>
+    </array>
+
+</resources>
