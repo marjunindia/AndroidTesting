@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import static android.R.attr.country;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityView {
 
 
     RelativeLayout relativeLayout;
@@ -27,11 +27,14 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinner;
     Button launchActivity;
     String[] country = { "India", "USA" };
+    MainActivityPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        presenter = new MainActivityPresenter(this);
         mytextview= (TextView) findViewById(R.id.textView);
         relativeLayout= (RelativeLayout) findViewById(R.id.layout);
         editText= (EditText) findViewById(R.id.editText);
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(i== EditorInfo.IME_ACTION_DONE){
                     String text=textView.getText().toString();
-                    mytextview.setText(text);
+                    presenter.editTextUpdated(text);
                 }
                 return false;
             }
@@ -57,14 +60,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
-                    case 0:
-                        relativeLayout.setBackgroundColor(Color.CYAN);
-                        break;
-                    case 1:
-                        relativeLayout.setBackgroundColor(Color.GREEN);
-
-                }
+                presenter.colorSelected(i);
             }
 
             @Override
@@ -76,9 +72,27 @@ public class MainActivity extends AppCompatActivity {
         launchActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,OtherActivity.class));
+                presenter.launchother(OtherActivity.class);
             }
         });
+
+    }
+
+    @Override
+    public void changeTextviewText(String text) {
+        mytextview.setText(text);
+
+    }
+
+    @Override
+    public void changeBackgroundColor(int color) {
+        relativeLayout.setBackgroundColor(color);
+
+    }
+
+    @Override
+    public void launchOtherActivity(Class activity) {
+        startActivity(new Intent(MainActivity.this, activity));
 
     }
 }
